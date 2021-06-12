@@ -11,13 +11,16 @@ onready var play_button = $interface/play_button
 var playing = false
 
 var rng
+var rng_seed
 
 var grain = preload("res://grain/grain.tscn")
 var density = 50.0
 var size_min = 1
-var size_max = 16
+var size_max = 4
 var pitch = 0
-var offset_rounding = 16.0
+
+var use_rounding = false
+var rounding = 16.0
 
 var tempo_random = 0.0
 var density_random = 0.0
@@ -32,8 +35,8 @@ onready var density_slider = $interface/density_slider
 onready var pitch_label = $interface/pitch_label
 onready var pitch_slider = $interface/pitch_slider
 
-onready var size_label = $interface/size_label
-onready var size_slider = $interface/size_slider
+onready var rounding_label = $interface/rounding_label
+onready var rounding_slider = $interface/rounding_slider
 
 onready var tempo_random_label = $interface/tempo_random_label
 onready var tempo_random_slider = $interface/tempo_random_slider
@@ -44,7 +47,10 @@ onready var density_random_slider = $interface/density_random_slider
 onready var pitch_random_label = $interface/pitch_random_label
 onready var pitch_random_slider = $interface/pitch_random_slider
 
+onready var seed_box = $interface/seed_box
+
 func _ready():
+	randomize()
 	rng = RandomNumberGenerator.new()
 
 	_set_tempo(120.0)
@@ -55,23 +61,36 @@ func _ready():
 	_set_density_random(0.0)
 	_set_pitch_random(0.0)
 
+	_set_rounding(64.0)
+
+	_randomize_seed()
+
 	play_button.disabled = true
+
+func _set_seed(value):
+	rng_seed = value
+	rng.seed = value
+
+func _randomize_seed():
+	var new_seed = randi()
+	rng.seed = new_seed
+	seed_box.value = new_seed
 
 func _set_tempo(value):
 	interval = 60.0 / tempo
 	timer_beat.wait_time = interval
 	tempo_slider.value = value
-	tempo_label.text = "Tempo: " + str(value) + " BPM"
+	tempo_label.text = "Tempo: " + str(round(value)) + " BPM"
 
 func _set_density(value):
 	density = value
 	density_slider.value = value
-	density_label.text = "Density: " + str(value) + "%"
+	density_label.text = "Density: " + str(round(value)) + "%"
 
 func _set_pitch(value):
 	pitch = value
 	pitch_slider.value = value
-	pitch_label.text = "Pitch: " + str(value) + " st"
+	pitch_label.text = "Pitch: " + str(round(value)) + " st"
 
 func _set_tempo_random(value):
 	tempo_random = value
@@ -84,6 +103,18 @@ func _set_density_random(value):
 func _set_pitch_random(value):
 	pitch_random = value
 	pitch_random_label.text = "Randomization: " + str(value) + "%"
+
+func _toggle_rounding(toggled):
+	if toggled:
+		use_rounding = true
+		rounding_slider.editable = true
+	else:
+		use_rounding = false
+		rounding_slider.editable = false
+
+func _set_rounding(value):
+	rounding = value
+	rounding_label.text = "Rounding factor: " + str(value)
 
 func _load_pressed():
 	_play_stop()
@@ -112,6 +143,7 @@ func _play_pressed():
 		_play_stop()
 
 func _play_start():
+	_set_seed(rng_seed)
 	timer_beat.start()
 	playing = true
 	play_button.text = "Stop"
@@ -133,12 +165,13 @@ func _randomize_params():
 
 	var density_rand_chance = rng.randf() * 100.0
 	if density_rand_chance < density_random:
-		var new_density = round(rng.randf() * 100.0)
+		var new_density = rng.randf() * 100.0
 		_set_density(new_density)
 
 	var pitch_rand_chance = rng.randf() * 100.0
 	if pitch_rand_chance < pitch_random:
-		_set_pitch(rng.randi_range(-6, 6))
+		var new_pitch = rng.randi_range(-6, 6)
+		_set_pitch(new_pitch)
 
 func _spawn_grain():
 	var spawn_chance = rng.randf() * 100.0
@@ -147,9 +180,12 @@ func _spawn_grain():
 		add_child(new_grain)
 		var sample_id = rng.randi_range(0, samples.size() - 1)
 		var curr_sample = samples[sample_id]
-		var new_offset = rng.randf_range(0.0, curr_sample.get_length())
-		new_offset = round(new_offset * offset_rounding) / offset_rounding
+		var new_offset
+		if use_rounding:
+			new_offset = curr_sample.get_length() / rounding * rng.randi_range(0, rounding)
+		else:
+			new_offset = rng.randf_range(0.0, curr_sample.get_length())
 		var new_pitch = pitch
 		new_pitch = pow(2.0, new_pitch / 12.0)
-		var new_size = interval / 4.0 * rng.randi_range(size_min, size_max)
+		var new_size = interval * rng.randi_range(size_min, size_max)
 		new_grain._grain_play(curr_sample, new_offset, new_pitch, new_size)
