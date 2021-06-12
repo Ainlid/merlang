@@ -34,9 +34,9 @@ margin_left = -247.0
 margin_top = -238.0
 margin_right = 247.0
 margin_bottom = 238.0
-window_title = "Open a File"
+window_title = "Open File(s)"
 dialog_text = "Select a .wav audio file"
-mode = 0
+mode = 1
 access = 2
 filters = PoolStringArray( "*.wav" )
 current_dir = "/Daniil/art/merlang"
@@ -56,5 +56,5 @@ text = "Play"
 
 [connection signal="timeout" from="timer_beat" to="." method="_spawn_grain"]
 [connection signal="pressed" from="interface/load_button" to="." method="_load_pressed"]
-[connection signal="file_selected" from="interface/file_dialog" to="." method="_file_selected"]
+[connection signal="files_selected" from="interface/file_dialog" to="." method="_files_selected"]
 [connection signal="pressed" from="interface/play_button" to="." method="_play_pressed"]

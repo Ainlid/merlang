@@ -4,7 +4,7 @@ export var tempo = 120.0
 var interval = 1.0
 onready var timer_beat = $timer_beat
 
-var sample
+var samples = []
 onready var file_dialog = $interface/file_dialog
 
 onready var play_button = $interface/play_button
@@ -30,17 +30,19 @@ func _load_pressed():
 	_play_stop()
 	file_dialog.popup()
 
-func _file_selected(path):
+func _files_selected(paths):
 	var file = File.new()
-	if file.file_exists(path):
-		file.open(path, file.READ)
-		var buffer = file.get_buffer(file.get_len())
-		sample = AudioStreamSample.new()
-		sample.format = AudioStreamSample.FORMAT_16_BITS      
-		sample.data = buffer
-		sample.stereo = true
-		sample.mix_rate = 44100
-		file.close()
+	for n in paths.size():
+		if file.file_exists(paths[n]):
+			file.open(paths[n], file.READ)
+			var buffer = file.get_buffer(file.get_len())
+			var new_sample = AudioStreamSample.new()
+			new_sample.format = AudioStreamSample.FORMAT_16_BITS      
+			new_sample.data = buffer
+			new_sample.stereo = true
+			new_sample.mix_rate = 44100
+			samples.append(new_sample)
+			file.close()
 	play_button.disabled = false
 
 func _play_pressed():
@@ -64,8 +66,10 @@ func _spawn_grain():
 	if spawn_chance < density:
 		var new_grain = grain.instance()
 		add_child(new_grain)
-		var new_offset = rng.randf_range(0.0, sample.get_length())
+		var sample_id = rng.randi_range(0, samples.size() - 1)
+		var curr_sample = samples[sample_id]
+		var new_offset = rng.randf_range(0.0, curr_sample.get_length())
 		var new_pitch = rng.randi_range(0, pitches.size())
 		new_pitch = pow(2.0, new_pitch / 12.0)
 		var new_size = interval / 4.0 * rng.randi_range(size_min, size_max)
-		new_grain._grain_play(sample, new_offset, new_pitch, new_size)
+		new_grain._grain_play(curr_sample, new_offset, new_pitch, new_size)
