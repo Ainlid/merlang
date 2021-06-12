@@ -49,6 +49,13 @@ onready var pitch_random_slider = $interface/pitch_random_slider
 
 onready var seed_box = $interface/seed_box
 
+onready var audio_record = $audio_record
+onready var record_button = $interface/record_button
+onready var save_path_label = $interface/save_path_label
+
+var effect
+var recording
+
 func _ready():
 	randomize()
 	rng = RandomNumberGenerator.new()
@@ -66,6 +73,9 @@ func _ready():
 	_randomize_seed()
 
 	play_button.disabled = true
+
+	effect = AudioServer.get_bus_effect(0, 0)
+	save_path_label.text = OS.get_executable_path().get_base_dir() + "/recording.wav"
 
 func _set_seed(value):
 	rng_seed = value
@@ -118,10 +128,10 @@ func _set_rounding(value):
 
 func _load_pressed():
 	_play_stop()
-	samples = []
 	file_dialog.popup()
 
 func _files_selected(paths):
+	samples = []
 	var file = File.new()
 	for n in paths.size():
 		if file.file_exists(paths[n]):
@@ -152,6 +162,19 @@ func _play_stop():
 	timer_beat.stop()
 	playing = false
 	play_button.text = "Play"
+
+func _record_pressed():
+	if effect.is_recording_active():
+		recording = effect.get_recording()
+		effect.set_recording_active(false)
+		record_button.text = "Record"
+	else:
+		effect.set_recording_active(true)
+		record_button.text = "Stop recording"
+
+func _save_pressed():
+	var save_path = save_path_label.text
+	recording.save_to_wav(save_path)
 
 func _tick():
 	_randomize_params()
@@ -189,3 +212,6 @@ func _spawn_grain():
 		new_pitch = pow(2.0, new_pitch / 12.0)
 		var new_size = interval * rng.randi_range(size_min, size_max)
 		new_grain._grain_play(curr_sample, new_offset, new_pitch, new_size)
+
+func _quit_pressed():
+	get_tree().quit()

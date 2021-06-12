@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://core/core.gd" type="Script" id=1]
+
+[sub_resource type="AudioStreamSample" id=1]
 
 [node name="core" type="Node2D"]
 script = ExtResource( 1 )
@@ -24,21 +26,32 @@ __meta__ = {
 }
 
 [node name="title" type="Label" parent="interface"]
-margin_left = 40.0
-margin_top = 43.0
-margin_right = 190.0
-margin_bottom = 67.0
-rect_scale = Vector2( 4, 4 )
-text = "merlang by ainlid, 2021"
+margin_top = 17.0
+margin_right = 960.0
+margin_bottom = 41.0
+rect_scale = Vector2( 2, 2 )
+text = "merlang v1"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="credit" type="Label" parent="interface"]
+margin_left = 1803.18
+margin_top = 1031.73
+margin_right = 1855.18
+margin_bottom = 1049.73
+rect_scale = Vector2( 2, 2 )
+text = "@ainlid"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="load_button" type="Button" parent="interface"]
 margin_left = 67.0
-margin_top = 225.042
+margin_top = 80.042
 margin_right = 561.0
-margin_bottom = 281.042
+margin_bottom = 136.042
 text = "Load audio"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -51,9 +64,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -893.0
-margin_top = -187.0
+margin_top = -332.0
 margin_right = -399.0
-margin_bottom = 289.0
+margin_bottom = 144.0
 window_title = "Open File(s)"
 dialog_text = "Select a .wav audio file"
 mode = 1
@@ -67,9 +80,9 @@ __meta__ = {
 
 [node name="play_button" type="Button" parent="interface"]
 margin_left = 67.0
-margin_top = 878.029
+margin_top = 733.029
 margin_right = 561.0
-margin_bottom = 934.029
+margin_bottom = 789.029
 text = "Play"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -77,9 +90,9 @@ __meta__ = {
 
 [node name="label_params" type="Label" parent="interface"]
 margin_left = 621.0
-margin_top = 225.0
+margin_top = 80.0
 margin_right = 1576.0
-margin_bottom = 281.0
+margin_bottom = 136.0
 text = "Parameters:"
 align = 1
 valign = 1
@@ -89,9 +102,9 @@ __meta__ = {
 
 [node name="tempo_slider" type="HSlider" parent="interface"]
 margin_left = 791.0
-margin_top = 335.0
+margin_top = 190.0
 margin_right = 1087.0
-margin_bottom = 391.0
+margin_bottom = 246.0
 min_value = 50.0
 max_value = 200.0
 value = 120.0
@@ -101,9 +114,9 @@ __meta__ = {
 
 [node name="tempo_label" type="Label" parent="interface"]
 margin_left = 621.0
-margin_top = 335.0
+margin_top = 190.0
 margin_right = 746.0
-margin_bottom = 391.0
+margin_bottom = 246.0
 text = "Tempo: "
 valign = 1
 __meta__ = {
@@ -112,9 +125,9 @@ __meta__ = {
 
 [node name="density_slider" type="HSlider" parent="interface"]
 margin_left = 791.0
-margin_top = 391.042
+margin_top = 246.042
 margin_right = 1087.0
-margin_bottom = 447.042
+margin_bottom = 302.042
 value = 50.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -122,9 +135,9 @@ __meta__ = {
 
 [node name="density_label" type="Label" parent="interface"]
 margin_left = 621.0
-margin_top = 391.042
+margin_top = 246.042
 margin_right = 746.0
-margin_bottom = 447.042
+margin_bottom = 302.042
 text = "Density: "
 valign = 1
 __meta__ = {
@@ -133,9 +146,9 @@ __meta__ = {
 
 [node name="pitch_slider" type="HSlider" parent="interface"]
 margin_left = 791.0
-margin_top = 449.042
+margin_top = 304.042
 margin_right = 1087.0
-margin_bottom = 505.042
+margin_bottom = 360.042
 min_value = -6.0
 max_value = 6.0
 __meta__ = {
@@ -144,9 +157,9 @@ __meta__ = {
 
 [node name="pitch_label" type="Label" parent="interface"]
 margin_left = 621.0
-margin_top = 447.042
+margin_top = 302.042
 margin_right = 746.0
-margin_bottom = 503.042
+margin_bottom = 358.042
 text = "Pitch: "
 valign = 1
 __meta__ = {
@@ -155,18 +168,18 @@ __meta__ = {
 
 [node name="tempo_random_slider" type="HSlider" parent="interface"]
 margin_left = 1280.0
-margin_top = 337.0
+margin_top = 192.0
 margin_right = 1576.0
-margin_bottom = 393.0
+margin_bottom = 248.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="tempo_random_label" type="Label" parent="interface"]
 margin_left = 1110.0
-margin_top = 335.0
+margin_top = 190.0
 margin_right = 1235.0
-margin_bottom = 391.0
+margin_bottom = 246.0
 text = "Randomization: "
 valign = 1
 __meta__ = {
@@ -175,18 +188,18 @@ __meta__ = {
 
 [node name="density_random_slider" type="HSlider" parent="interface"]
 margin_left = 1280.0
-margin_top = 395.0
+margin_top = 250.0
 margin_right = 1576.0
-margin_bottom = 451.0
+margin_bottom = 306.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="density_random_label" type="Label" parent="interface"]
 margin_left = 1110.0
-margin_top = 393.0
+margin_top = 248.0
 margin_right = 1235.0
-margin_bottom = 449.0
+margin_bottom = 304.0
 text = "Randomization: "
 valign = 1
 __meta__ = {
@@ -195,18 +208,18 @@ __meta__ = {
 
 [node name="pitch_random_slider" type="HSlider" parent="interface"]
 margin_left = 1280.0
-margin_top = 453.0
+margin_top = 308.0
 margin_right = 1576.0
-margin_bottom = 509.0
+margin_bottom = 364.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="pitch_random_label" type="Label" parent="interface"]
 margin_left = 1110.0
-margin_top = 451.0
+margin_top = 306.0
 margin_right = 1235.0
-margin_bottom = 507.0
+margin_bottom = 362.0
 text = "Randomization: "
 valign = 1
 __meta__ = {
@@ -215,18 +228,18 @@ __meta__ = {
 
 [node name="rounding_toggle" type="CheckBox" parent="interface"]
 margin_left = 791.0
-margin_top = 509.0
+margin_top = 364.0
 margin_right = 828.0
-margin_bottom = 565.0
+margin_bottom = 420.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="rounding_toggle_label" type="Label" parent="interface"]
 margin_left = 621.0
-margin_top = 509.0
+margin_top = 364.0
 margin_right = 746.0
-margin_bottom = 565.0
+margin_bottom = 420.0
 text = "Use rounding: "
 valign = 1
 __meta__ = {
@@ -235,9 +248,9 @@ __meta__ = {
 
 [node name="rounding_slider" type="HSlider" parent="interface"]
 margin_left = 791.0
-margin_top = 567.0
+margin_top = 422.0
 margin_right = 1087.0
-margin_bottom = 623.0
+margin_bottom = 478.0
 min_value = 2.0
 max_value = 16.0
 value = 16.0
@@ -247,9 +260,9 @@ __meta__ = {
 
 [node name="rounding_label" type="Label" parent="interface"]
 margin_left = 621.0
-margin_top = 565.0
+margin_top = 420.0
 margin_right = 746.0
-margin_bottom = 621.0
+margin_bottom = 476.0
 text = "Rounding factor: "
 valign = 1
 __meta__ = {
@@ -258,16 +271,19 @@ __meta__ = {
 
 [node name="seed_box" type="SpinBox" parent="interface"]
 margin_left = 791.0
-margin_top = 623.0
+margin_top = 478.0
 margin_right = 1087.0
-margin_bottom = 677.0
+margin_bottom = 532.0
 max_value = 1e+10
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="seed_label" type="Label" parent="interface"]
 margin_left = 621.0
-margin_top = 623.0
+margin_top = 478.0
 margin_right = 746.0
-margin_bottom = 679.0
+margin_bottom = 534.0
 text = "RNG seed: "
 valign = 1
 __meta__ = {
@@ -276,25 +292,70 @@ __meta__ = {
 
 [node name="seed_random_button" type="Button" parent="interface"]
 margin_left = 1087.0
-margin_top = 623.0
+margin_top = 478.0
 margin_right = 1280.0
-margin_bottom = 679.0
+margin_bottom = 534.0
 text = "Random seed"
-
-[node name="info" type="Label" parent="interface"]
-margin_left = 621.0
-margin_top = 765.0
-margin_right = 1817.0
-margin_bottom = 840.0
-text = "I couldn't find a tool to create sound collages the way I want so I tried to make one. it loads one or multiple samples and plays random parts. Use 44100 Hz samples for proper playback.
-You can control the speed and probability of those grains spawning. The randomization sliders determine the chance of random changes to tempo, density or pitch.
-You can use rounding to increase the repetition by rounding the beginning points of the samples.
-Every random event happening to the audio is tied to a single RNG. You can safely replicate the results by reusing the seed. Have fun!"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="audio" type="AudioStreamPlayer" parent="."]
+[node name="info" type="Label" parent="interface"]
+margin_left = 621.0
+margin_top = 620.0
+margin_right = 1817.0
+margin_bottom = 695.0
+text = "I couldn't find a tool to create sound collages the way I want so I tried to make one. it loads one or multiple samples and plays random parts. Use 44100 Hz samples for proper playback.
+You can control the speed and probability of those grains spawning. The randomization sliders determine the chance of random changes to tempo, density or pitch.
+You can use rounding to increase the repetition by rounding the beginning points of the samples.
+Every random event happening to the audio is tied to a single RNG. You can safely replicate the results by reusing the seed. I hope you will find some use for it!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="record_button" type="Button" parent="interface"]
+margin_left = 67.0
+margin_top = 839.0
+margin_right = 561.0
+margin_bottom = 895.0
+toggle_mode = true
+text = "Record"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="save_button" type="Button" parent="interface"]
+margin_left = 67.0
+margin_top = 953.551
+margin_right = 237.0
+margin_bottom = 1009.55
+text = "Save recording to:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="save_path_label" type="LineEdit" parent="interface"]
+margin_left = 237.0
+margin_top = 954.0
+margin_right = 882.0
+margin_bottom = 1010.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="quit_button" type="Button" parent="interface"]
+margin_left = 1836.0
+margin_top = 24.0
+margin_right = 1900.0
+margin_bottom = 88.0
+text = "X"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="audio_record" type="AudioStreamPlayer" parent="."]
+stream = SubResource( 1 )
+autoplay = true
 
 [connection signal="timeout" from="timer_beat" to="." method="_tick"]
 [connection signal="pressed" from="interface/load_button" to="." method="_load_pressed"]
@@ -310,3 +371,6 @@ __meta__ = {
 [connection signal="value_changed" from="interface/rounding_slider" to="." method="_set_rounding"]
 [connection signal="value_changed" from="interface/seed_box" to="." method="_set_seed"]
 [connection signal="pressed" from="interface/seed_random_button" to="." method="_randomize_seed"]
+[connection signal="pressed" from="interface/record_button" to="." method="_record_pressed"]
+[connection signal="pressed" from="interface/save_button" to="." method="_save_pressed"]
+[connection signal="pressed" from="interface/quit_button" to="." method="_quit_pressed"]
