@@ -19,6 +19,10 @@ var size_max = 16
 var pitch = 0
 var offset_rounding = 16.0
 
+var tempo_random = 0.0
+var density_random = 0.0
+var pitch_random = 0.0
+
 onready var tempo_label = $interface/tempo_label
 onready var tempo_slider = $interface/tempo_slider
 
@@ -31,26 +35,14 @@ onready var pitch_slider = $interface/pitch_slider
 onready var size_label = $interface/size_label
 onready var size_slider = $interface/size_slider
 
-var tempo_random_rate = 10.0
-var density_random_rate = 10.0
-var pitch_random_rate = 10.0
+onready var tempo_random_label = $interface/tempo_random_label
+onready var tempo_random_slider = $interface/tempo_random_slider
 
-onready var tempo_random_rate_label = $interface/tempo_random_rate_label
-onready var tempo_random_rate_slider = $interface/tempo_random_rate_slider
+onready var density_random_label = $interface/density_random_label
+onready var density_random_slider = $interface/density_random_slider
 
-onready var density_random_rate_label = $interface/density_random_rate_label
-onready var density_random_rate_slider = $interface/density_random_rate_slider
-
-onready var pitch_random_rate_label = $interface/pitch_random_rate_label
-onready var pitch_random_rate_slider = $interface/pitch_random_rate_slider
-
-var tempo_random_amount = 0.0
-var density_random_amount = 0.0
-var pitch_random_amount = 0.0
-
-onready var tempo_random_amount_label = $interface/tempo_random_amount_label
-onready var density_random_amount_label = $interface/density_random_amount_label
-onready var pitch_random_amount_label = $interface/pitch_random_amount_label
+onready var pitch_random_label = $interface/pitch_random_label
+onready var pitch_random_slider = $interface/pitch_random_slider
 
 func _ready():
 	rng = RandomNumberGenerator.new()
@@ -59,13 +51,9 @@ func _ready():
 	_set_density(50.0)
 	_set_pitch(0)
 
-	_set_tempo_random_rate(10.0)
-	_set_density_random_rate(10.0)
-	_set_pitch_random_rate(10.0)
-
-	_set_tempo_random_amount(0.0)
-	_set_density_random_amount(0.0)
-	_set_pitch_random_amount(0.0)
+	_set_tempo_random(0.0)
+	_set_density_random(0.0)
+	_set_pitch_random(0.0)
 
 	play_button.disabled = true
 
@@ -85,29 +73,17 @@ func _set_pitch(value):
 	pitch_slider.value = value
 	pitch_label.text = "Pitch: " + str(value) + " st"
 
-func _set_tempo_random_rate(value):
-	tempo_random_rate = value
-	tempo_random_rate_label.text = "Randomization: " + str(round(value)) + "%"
+func _set_tempo_random(value):
+	tempo_random = value
+	tempo_random_label.text = "Randomization: " + str(value) + "%"
 
-func _set_density_random_rate(value):
-	density_random_rate = value
-	density_random_rate_label.text = "Randomization: " + str(round(value)) + "%"
+func _set_density_random(value):
+	density_random = value
+	density_random_label.text = "Randomization: " + str(value) + "%"
 
-func _set_pitch_random_rate(value):
-	pitch_random_rate = value
-	pitch_random_rate_label.text = "Randomization: " + str(round(value)) + "%"
-
-func _set_tempo_random_amount(value):
-	tempo_random_amount = value
-	tempo_random_amount_label.text = "Tempo random amount: " + str(value * 100.0) + "%"
-
-func _set_density_random_amount(value):
-	density_random_amount = value
-	density_random_amount_label.text = "Density random amount: " + str(value * 100.0) + "%"
-
-func _set_pitch_random_amount(value):
-	pitch_random_amount = value
-	pitch_random_amount_label.text = "Pitch random amount: " + str(value * 100.0) + "%"
+func _set_pitch_random(value):
+	pitch_random = value
+	pitch_random_label.text = "Randomization: " + str(value) + "%"
 
 func _load_pressed():
 	_play_stop()
@@ -151,23 +127,18 @@ func _tick():
 
 func _randomize_params():
 	var tempo_rand_chance = rng.randf() * 100.0
-	if tempo_rand_chance < tempo_random_rate:
+	if tempo_rand_chance < tempo_random:
 		var new_tempo = rng.randi_range(50, 200)
-		new_tempo = lerp(tempo, new_tempo, tempo_random_amount)
 		_set_tempo(new_tempo)
 
 	var density_rand_chance = rng.randf() * 100.0
-	if density_rand_chance < density_random_rate:
-		var new_density = rng.randf() * 100.0
-		new_density = lerp(density, new_density, density_random_amount)
+	if density_rand_chance < density_random:
+		var new_density = round(rng.randf() * 100.0)
 		_set_density(new_density)
 
 	var pitch_rand_chance = rng.randf() * 100.0
-	if pitch_rand_chance < pitch_random_rate:
-		var new_pitch = rng.randi_range(-6, 6)
-		new_pitch = lerp(pitch, new_pitch, pitch_random_amount)
-		new_pitch = round(new_pitch)
-		_set_pitch(new_pitch)
+	if pitch_rand_chance < pitch_random:
+		_set_pitch(rng.randi_range(-6, 6))
 
 func _spawn_grain():
 	var spawn_chance = rng.randf() * 100.0
