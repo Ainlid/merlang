@@ -14,26 +14,31 @@ var rng
 var rng_seed
 
 var grain = preload("res://grain/grain.tscn")
-var density = 50.0
+var volume = 0.0
 var size_min = 1
 var size_max = 4
 var pitch = 0
+var size = 0
 
 var use_rounding = false
 var rounding = 16.0
 
 var tempo_random = 0.0
-var density_random = 0.0
+var volume_random = 0.0
 var pitch_random = 0.0
+var size_random = 0.0
 
 onready var tempo_label = $interface/tempo_label
 onready var tempo_slider = $interface/tempo_slider
 
-onready var density_label = $interface/density_label
-onready var density_slider = $interface/density_slider
+onready var volume_label = $interface/volume_label
+onready var volume_slider = $interface/volume_slider
 
 onready var pitch_label = $interface/pitch_label
 onready var pitch_slider = $interface/pitch_slider
+
+onready var size_label = $interface/size_label
+onready var size_slider = $interface/size_slider
 
 onready var rounding_label = $interface/rounding_label
 onready var rounding_slider = $interface/rounding_slider
@@ -41,11 +46,14 @@ onready var rounding_slider = $interface/rounding_slider
 onready var tempo_random_label = $interface/tempo_random_label
 onready var tempo_random_slider = $interface/tempo_random_slider
 
-onready var density_random_label = $interface/density_random_label
-onready var density_random_slider = $interface/density_random_slider
+onready var volume_random_label = $interface/volume_random_label
+onready var volume_random_slider = $interface/volume_random_slider
 
 onready var pitch_random_label = $interface/pitch_random_label
 onready var pitch_random_slider = $interface/pitch_random_slider
+
+onready var size_random_label = $interface/size_random_label
+onready var size_random_slider = $interface/size_random_slider
 
 onready var seed_box = $interface/seed_box
 
@@ -61,11 +69,12 @@ func _ready():
 	rng = RandomNumberGenerator.new()
 
 	_set_tempo(120.0)
-	_set_density(50.0)
+	_set_volume(0.0)
 	_set_pitch(0)
+	_set_size(1)
 
 	_set_tempo_random(0.0)
-	_set_density_random(0.0)
+	_set_volume_random(0.0)
 	_set_pitch_random(0.0)
 
 	_set_rounding(64.0)
@@ -87,32 +96,42 @@ func _randomize_seed():
 	seed_box.value = new_seed
 
 func _set_tempo(value):
+	tempo = value
 	interval = 60.0 / tempo
 	timer_beat.wait_time = interval
 	tempo_slider.value = value
 	tempo_label.text = "Tempo: " + str(round(value)) + " BPM"
 
-func _set_density(value):
-	density = value
-	density_slider.value = value
-	density_label.text = "Density: " + str(round(value)) + "%"
+func _set_volume(value):
+	volume = value
+	volume_slider.value = value
+	volume_label.text = "Volume: " + str(round(value)) + " dB"
 
 func _set_pitch(value):
 	pitch = value
 	pitch_slider.value = value
 	pitch_label.text = "Pitch: " + str(round(value)) + " st"
 
+func _set_size(value):
+	size = value
+	size_slider.value = value
+	size_label.text = "Size: " + str(round(value)) + "/4"
+
 func _set_tempo_random(value):
 	tempo_random = value
 	tempo_random_label.text = "Randomization: " + str(value) + "%"
 
-func _set_density_random(value):
-	density_random = value
-	density_random_label.text = "Randomization: " + str(value) + "%"
+func _set_volume_random(value):
+	volume_random = value
+	volume_random_label.text = "Randomization: " + str(value) + "%"
 
 func _set_pitch_random(value):
 	pitch_random = value
 	pitch_random_label.text = "Randomization: " + str(value) + "%"
+
+func _set_size_random(value):
+	size_random = value
+	size_random_label.text = "Randomization: " + str(value) + "%"
 
 func _toggle_rounding(toggled):
 	if toggled:
@@ -186,32 +205,35 @@ func _randomize_params():
 		var new_tempo = rng.randi_range(50, 200)
 		_set_tempo(new_tempo)
 
-	var density_rand_chance = rng.randf() * 100.0
-	if density_rand_chance < density_random:
-		var new_density = rng.randf() * 100.0
-		_set_density(new_density)
+	var volume_rand_chance = rng.randf() * 100.0
+	if volume_rand_chance < volume_random:
+		var new_volume = rng.randf_range(-12.0, 0.0)
+		_set_volume(new_volume)
 
 	var pitch_rand_chance = rng.randf() * 100.0
 	if pitch_rand_chance < pitch_random:
 		var new_pitch = rng.randi_range(-6, 6)
 		_set_pitch(new_pitch)
 
+	var size_rand_chance = rng.randf() * 100.0
+	if size_rand_chance < size_random:
+		var new_size = rng.randi_range(1, 4)
+		_set_size(new_size)
+
 func _spawn_grain():
 	var spawn_chance = rng.randf() * 100.0
-	if spawn_chance < density:
-		var new_grain = grain.instance()
-		add_child(new_grain)
-		var sample_id = rng.randi_range(0, samples.size() - 1)
-		var curr_sample = samples[sample_id]
-		var new_offset
-		if use_rounding:
-			new_offset = curr_sample.get_length() / rounding * rng.randi_range(0, rounding)
-		else:
-			new_offset = rng.randf_range(0.0, curr_sample.get_length())
-		var new_pitch = pitch
-		new_pitch = pow(2.0, new_pitch / 12.0)
-		var new_size = interval * rng.randi_range(size_min, size_max)
-		new_grain._grain_play(curr_sample, new_offset, new_pitch, new_size)
+	var new_grain = grain.instance()
+	add_child(new_grain)
+	var sample_id = rng.randi_range(0, samples.size() - 1)
+	var curr_sample = samples[sample_id]
+	var new_offset
+	if use_rounding:
+		new_offset = curr_sample.get_length() / rounding * rng.randi_range(0, rounding)
+	else:
+		new_offset = rng.randf_range(0.0, curr_sample.get_length())
+	var new_pitch = pow(2.0, pitch / 12.0)
+	var new_size = interval * size
+	new_grain._grain_play(curr_sample, new_offset, new_pitch, new_size, volume)
 
 func _quit_pressed():
 	get_tree().quit()
