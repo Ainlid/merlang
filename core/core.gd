@@ -64,6 +64,9 @@ onready var save_path_label = $interface/save_path_label
 var effect
 var recording
 
+onready var master_volume_label = $interface/master_volume_label
+onready var master_volume_slider = $interface/master_volume_slider
+
 func _ready():
 	randomize()
 	rng = RandomNumberGenerator.new()
@@ -78,6 +81,8 @@ func _ready():
 	_set_pitch_random(0.0)
 
 	_set_rounding(64.0)
+
+	_set_master_volume(0.0)
 
 	_randomize_seed()
 
@@ -144,6 +149,10 @@ func _toggle_rounding(toggled):
 func _set_rounding(value):
 	rounding = value
 	rounding_label.text = "Rounding factor: " + str(value)
+
+func _set_master_volume(value):
+	AudioServer.set_bus_volume_db(0, value)
+	master_volume_label.text = "Master volume: " + str(value) + " dB"
 
 func _load_pressed():
 	_play_stop()
