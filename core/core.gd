@@ -5,7 +5,8 @@ var interval = 1.0
 onready var timer_beat = $timer_beat
 
 var samples = []
-onready var file_dialog = $interface/file_dialog
+onready var file_dialog = $interface/load_menu/file_dialog
+onready var file_list = $interface/load_menu/file_scroll/file_list
 
 onready var play_button = $interface/play_button
 var playing = false
@@ -160,6 +161,7 @@ func _load_pressed():
 
 func _files_selected(paths):
 	samples = []
+	file_list.text = "Loaded: \n"
 	var file = File.new()
 	for n in paths.size():
 		if file.file_exists(paths[n]):
@@ -171,6 +173,7 @@ func _files_selected(paths):
 			new_sample.stereo = true
 			new_sample.mix_rate = 44100
 			samples.append(new_sample)
+			file_list.text += str(paths[n].get_file()) + "\n"
 			file.close()
 	play_button.disabled = false
 
@@ -216,7 +219,7 @@ func _randomize_params():
 
 	var volume_rand_chance = rng.randf() * 100.0
 	if volume_rand_chance < volume_random:
-		var new_volume = rng.randf_range(-12.0, 0.0)
+		var new_volume = rng.randf_range(-6.0, 0.0)
 		_set_volume(new_volume)
 
 	var pitch_rand_chance = rng.randf() * 100.0
